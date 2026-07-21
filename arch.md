@@ -76,7 +76,7 @@ sudo ufw status verbose
 
 - `deny incoming`: запрет входящих подключений. Для разрешения добавляем порт `ufw allow порт/tcp`, также  можно удалить `ufw delete номер`
 - `allow outgoing`: разрешение на исходящие подключения
-- `status verbose`: проверка, чтобы убедиться что всё работает
+- `status verbose`: проверка, чтобы убедиться, что всё работает
 
 ---
 
@@ -158,6 +158,15 @@ rm -rf yay
 - `noto-fonts-cjk`
 - `noto-fonts-extra`
 - `ttf-nerd-fonts-symbols`
+- `ttf-firacode-nerd`
+
+Для красивого шрифта и отображения кастомных иконок в системе:
+
+```bash
+fc-match "JetBrainsMono Nerd Font" && fc-match "Symbols Nerd Font"
+
+gsettings set org.gnome.desktop.interface font-name "JetBrainsMono Nerd Font 11"
+```
 
 ---
 
@@ -247,7 +256,7 @@ nano ~/.config/brave-flags.conf
 
 - `ozone-platform-hint`: автоматически определяет вашу графическую платформу
 - `password-store`: отключение использования системного хранилища паролей, gnome, kwallet
-- `enabled-features`: включает рисование рамок и кнопок управления окном браузером через Wayland
+- `enable-features`: включает рисование рамок и кнопок управления окном браузером через Wayland
 - `disable-gpu-driver-bug-workarounds`: отключает костыли, которые Chromium применяет для конкретных драйверов видеокарт, если знает, что в них есть баги.
 - также желательно выключить QUIC: brave://flags/#enable-quic
 
@@ -288,7 +297,7 @@ sudo systemctl restart docker
 nano ~/jellyfin/docker-compose.yml
 ```
 
-```ini
+```yaml
 services:
   jellyfin:
     image: jellyfin/jellyfin:latest
@@ -367,7 +376,7 @@ sudo ventoy -i /dev/sdb
 - `lsblk`: список всех дисков, видимых системе
 - `smartctl -a`: вывод информации о конкретном диске
 - `umount`: размонтировать диск
-- `ventoy -i`: смонтировать Ventoy на диск. ВНИМАНИЕ: Стирает все данные на накопителе!
+- `ventoy -i`: установить Ventoy на диск. ВНИМАНИЕ: Стирает все данные на накопителе!
 
 ## Paccache
 
@@ -438,8 +447,10 @@ ruleset:geosite-whatsapp
 ## Поиск файлов
 
 ```bash
-sudo find / \( -iname "thunar" -o -iname "org.xfce.thunar.*" \) 2>/dev/null
+sudo find / \( -iname "имя" -o -iname "ещё_имя.*" \) 2>/dev/null
 ```
+
+- в `ещё_имя.*` символ `*` говорит системе искать файлы с любыми символами после `.`, к примеру `photo.jpg` и `photo.jpeg`
 
 ## Wpctl
 

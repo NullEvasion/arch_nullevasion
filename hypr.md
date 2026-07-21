@@ -5,7 +5,7 @@ sudo pacman -S \
 hyprland hyprshot kitty waybar \
 wofi mako hyprpolkitagent pipewire wireplumber \
 qt6-wayland xdg-desktop-portal-hyprland \
-xdg-desktop-portal-gtk 
+xdg-desktop-portal-gtk
 ```
 
 `hyprland`: динамический тайлинговый Wayland-композитор
@@ -165,7 +165,7 @@ nano ~/.config/waybar/config.jsonc
     "spacing": 4,
     "modules-left": ["hyprland/workspaces"],
     "modules-center": ["clock", "clock#date"],
-    "modules-right": ["cpu", "pulseaudio", "temperature", "memory", "hyprland/language", "tray"],
+    "modules-right": ["cpu", "memory", "temperature", "pulseaudio", "network", "hyprland/language", "tray"],
 
     "hyprland/workspaces": {
         "disable-scroll": true,
@@ -180,8 +180,7 @@ nano ~/.config/waybar/config.jsonc
     },
 
     "clock#date": {
-        "format": "{:%d.%m}",
-        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
+        "format": "{:%d.%m}"
     },
 
     "tray": {
@@ -198,28 +197,38 @@ nano ~/.config/waybar/config.jsonc
 
     "memory": {
         "interval": 2,
-        "format": "RAM {used:0.1f}/{total:0.0f}GB"
+        "format": "{used:4.1f}/{total:0.0f}G 󰾆"
     },
 
     "temperature": {
-        "format": "TEMP {temperatureC}°C"
+        "thermal-zone": 1,
+        "format": "{temperatureC}°C "
     },
 
     "cpu": {
         "interval": 2,
-        "format": "CPU {usage}%"
+        "format": "{usage:3}% 󰍛"
     },
 
     "pulseaudio": {
-        "format": "SOUND {volume}%",
-        "format-muted": "MUTED",
+        "format": "{volume}% 󰕾",
+        "format-muted": "󰝟",
         "scroll-step": 2,
         "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+    },
+
+    "network": {
+        "format-wifi": "󰖟",
+        "format-ethernet": "󰖟",
+        "format-linked": "󰖟",
+        "format-disconnected": "󰖟",
+        "tooltip": true,
+        "tooltip-format": "{ifname}\n{ipaddr}"
     }
 }
 ```
 
-Чтобы узнать название клавиатуры для `hyprland/language`:
+Чтобы узнать название клавиатуры для модуля `hyprland/language`:
 
 ```bash
 hyprctl devices
@@ -227,31 +236,47 @@ hyprctl devices
 
 - ищем устройство с параметром `main: yes`
 
+Узнать какой датчик отвечает за температуру процессора модуля `temperature`:
+
+```bash
+ls /sys/class/thermal/
+
+cat /sys/class/thermal/thermal_zone*/type
+```
+
+- `ls`: выводит список датчиков, нас интересуют названия `thermal_zone` с номерами
+- `cat`: выводит тип каждого `thermal_zone` по порядку номеров
+- к примеру `cat` вывел `acpitz x86_pkg_temp`, значит датчик отвечающий за температуру процессора `thermal_zone1`, а не `thermal_zone0`.
+- вводим итоговую цифру в модуль
+
 
 ```bash
 nano ~/.config/waybar/style.css
 ```
 
 ```css
+* {
+    font-family: "JetBrainsMono Nerd Font";
+    font-size: 14px;
+}
+
 window#waybar {
     background: transparent;
     border: none;
     box-shadow: none;
-    transition-property: background-color;
-    transition-duration: 0.5s;
+    transition: background-color .5s;
 }
 
 .modules-left,
 .modules-center,
 .modules-right {
     background: rgba(15, 20, 25, .35);
-    color: #ffffff;
-    border-radius: 12px;
+    color: #fff;
     border: 3px solid rgba(23, 147, 209, .8);
+    border-radius: 12px;
     padding: 3px 12px;
-    margin-top: 8px;
-    margin-bottom: 8px;
-    transition: all 0.2s ease;
+    margin: 8px 0;
+    transition: all .2s ease;
 }
 
 .modules-left {
@@ -263,7 +288,7 @@ window#waybar {
 }
 
 #workspaces button {
-    color: #ffffff;
+    color: #fff;
     border-radius: 12px;
     padding: 0 8px;
     transition: all .2s ease;
@@ -281,13 +306,27 @@ window#waybar {
 }
 
 #cpu,
-#memory,
 #temperature,
+#network,
 #language,
+#memory,
 #pulseaudio {
     border-right: 1px solid rgba(23, 147, 209, .25);
-    padding-right: 10px;
+    padding-right: 14px;
     margin-right: 8px;
+}
+
+#memory {
+    padding-right: 15px;
+}
+
+#language {
+    padding-right: 11px;
+}
+
+#network.disconnected {
+    color: #a0a0a0;
+    
 }
 
 #clock.date {
@@ -377,6 +416,9 @@ nano ~/.config/kitty/kitty.conf
 ```
 
 ```ini
+font_family JetBrainsMono Nerd Font
+font_size 11
+
 foreground #ffffff
 background #0f1419
 
