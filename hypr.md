@@ -32,26 +32,43 @@ nano ~/.config/hypr/hyprland.conf
 ```
 
 ```ini
-env = XDG_SESSION_TYPE,wayland
 env = LIBVA_DRIVER_NAME,radeonsi
+env = XDG_SESSION_TYPE,wayland
 env = GTK_THEME,Colloid-Dark
+
 monitor = DP-2,1440x900@59.89,auto,1
 
+exec-once = dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
+exec-once = systemctl --user start hyprpolkitagent
+exec-once = waybar
+exec-once = mako
+exec-once = awww-daemon
+exec-once = sleep 3 && easyeffects --gapplication-service
+exec-once = ~/.config/hypr/wallpaper.sh
+exec-once = wl-paste --type text --watch cliphist store
+exec-once = wl-paste --type image --watch cliphist store
+
+bind = SUPER, M, exit
+bind = SUPER, C, killactive
 bind = SUPER, Q, exec, kitty
-bind = SUPER, C, killactive,
-bind = SUPER, M, exit,
-bind = SUPER, E, exec, thunar
-bind = SUPER, R, exec, wofi --show drun --normal-window --style ~/.config/wofi/style.css
-bind = SUPER, F, fullscreen, 0
 bind = SUPER, 1, workspace, 1
 bind = SUPER, 2, workspace, 2
 bind = SUPER, 3, workspace, 3
 bind = SUPER, 4, workspace, 4
 bind = SUPER, 5, workspace, 5
 bind = SUPER, 6, workspace, 6
-bind = SUPER, V, togglefloating,
-
-bind = SUPER, Z, exec, HYPRSHOT_DIR=$HOME/screenshots hyprshot -m region --clipboard-only
+bind = SUPER, E, exec, thunar
+bind = SUPER, F, fullscreen, 0
+bind = SUPER, UP, movefocus, u
+bind = SUPER, X, togglefloating
+bind = SUPER, LEFT, movefocus, l
+bind = SUPER, DOWN, movefocus, d
+bind = SUPER, RIGHT, movefocus, r
+bind = SUPER SHIFT, C, forcekillactive
+bind = SUPER SHIFT, R, exec, hyprctl reload
+bind = SUPER, Z, exec, hyprshot -m region --clipboard-only
+bind = SUPER, V, exec, cliphist list | wofi --dmenu | cliphist decode | wl-copy
+bind = SUPER, R, exec, wofi --show drun --normal-window --style ~/.config/wofi/style.css
 
 bindel = SUPER, A, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
 bindel = SUPER, D, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
@@ -59,18 +76,9 @@ bindel = SUPER, D, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
 bindm = SUPER, mouse:272, movewindow
 bindm = SUPER, mouse:273, resizewindow
 
-exec-once = dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
-exec-once = systemctl --user start hyprpolkitagent
-exec-once = waybar
-exec-once = mako
-exec-once = sleep 3 && easyeffects --gapplication-service
-exec-once = awww-daemon
-exec-once = ~/.config/hypr/wallpaper.sh
-
 input {
     kb_layout = us,ru
     kb_options = grp:alt_shift_toggle, compose:ralt
-
     follow_mouse = 1
 }
 
@@ -90,7 +98,6 @@ decoration {
         enabled = true
         size = 10
         passes = 4
-        new_optimizations = true
         ignore_opacity = true
         xray = true
         noise = 0.02
@@ -117,34 +124,29 @@ animations {
 }
 
 layerrule {
-    name = waybar-blur
-    match:namespace = ^(waybar)$
-    blur = on
-    ignore_alpha = 0.1
-    animation = off
-}
-
-layerrule {
-    name = wofi-blur
-    match:namespace = ^(wofi)$
+    name = blur
+    match:namespace = ^(waybar|wofi)$
     blur = on
     ignore_alpha = 0.1
     animation = off
 }
 
 windowrule {
-    name = kitty-aesthetic
-    match:class = ^(kitty)$
-}
-
-windowrule {
-    name = thunar-opacity
-    match:class = ^(thunar)$
+    name = opacity
+    match:class = ^(kitty|thunar)$
     opacity = 0.80
 }
 ```
+Параметры `env` для Nvidia нужны такие:
 
-Название монитора можно узнать командой:
+- env = LIBVA_DRIVER_NAME,nvidia
+- env = XDG_SESSION_TYPE,wayland
+- env = GTK_THEME,Colloid-Dark
+- env = GBM_BACKEND,nvidia-drm
+- env = __GLX_VENDOR_LIBRARY_NAME,nvidia
+
+Параметры монитора, для `monitor` можно узнать командой:
+
 ```bash
 hyprctl monitors
 ```

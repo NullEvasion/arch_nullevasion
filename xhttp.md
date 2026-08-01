@@ -224,7 +224,7 @@ systemctl restart ssh
 Inbound Tags api
 Outbound Tag api
 
-Domain: regexp:.*\.ru$,regexp:.*\.su$,regexp:.*\.rf$,regexp:.*yandex.*,regexp:.*vkontakte.*,regexp:.*mail\.ru$
+Domain: regexp:.*\.ru$,regexp:.*\.su$,regexp:.*\.rf$,regexp:.*yandex.*,regexp:.*\.рф$,regexp:.*mail\.ru$
 Outbound Tag: blocked
 
 Protocol: bittorrent
