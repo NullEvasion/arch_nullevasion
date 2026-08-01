@@ -5,6 +5,7 @@
 ### Hardware
 
 - **Материнская плата:** ASUS B760-Plus DDR5
+- **Блок питания:** Chieftec Silicon 650W SLC-650C
 - **Процессор:** Intel Core i5-14400F OEM
 - **Охлаждение:** ID-COOLING SE-903-XT BLACK
 - **Оперативная память:** Kingston FURY Beast Black DDR5
