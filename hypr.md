@@ -1,11 +1,20 @@
+```ini
+# #######################################################################################
+#                                                                                       #
+#   Hyprland                                                                            #
+#   Version: 0.56.1                                                                     #
+#                                                                                       #
+# #######################################################################################
+```
+
 # Установка пакетов
 
 ```bash
 sudo pacman -S \
-hyprland hyprshot kitty waybar \
-wofi mako hyprpolkitagent pipewire wireplumber \
-qt6-wayland xdg-desktop-portal-hyprland \
-xdg-desktop-portal-gtk
+    hyprland hyprshot kitty waybar \
+    wofi mako hyprpolkitagent pipewire wireplumber \
+    qt6-wayland xdg-desktop-portal-hyprland \
+    xdg-desktop-portal-gtk
 ```
 
 `hyprland`: динамический тайлинговый Wayland-композитор
@@ -128,6 +137,7 @@ animations {
 
 layerrule = blur on, match:namespace all
 windowrule = opacity 0.95, match:namespace all
+windowrule = opacity 1, match:class steam_app_.*
 ```
 Параметры `env` для Nvidia нужны такие:
 
