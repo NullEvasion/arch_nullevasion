@@ -20,6 +20,7 @@ bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.
 - при настройке SSL выбрать `0`
 
 После установки:
+
 - Копируем логин и пароль, авторизуемся на сервере
 - IP-адрес управления панелью ставим `127.0.0.1` и порт `28781`
 
@@ -62,7 +63,7 @@ systemctl restart fail2ban
 
 ---
 
-# Настройка сети
+# Базовая настройка сервера
 
 Открываем файл конфигурации:
 
@@ -196,12 +197,12 @@ systemctl enable ssh
 systemctl restart ssh
 ```
 
-- перезапуск ssh. После этого чистим хосты в .ssh и перезаходим на сервер
-- если не пускает то прописываем `sudo systemctl disable --now ssh.socket && sudo systemctl enable --now ssh`
+- перезапуск ssh. После этого чистим хосты `ssh-keygen -R ip_адрес_сервера` и перезаходим на сервер
+- если не пускает то прописываем `sudo systemctl disable --now ssh.socket && sudo systemctl enable --now ssh` через VNC на сайте провайдера
 
 ---
 
-# Настройка сервера
+# Настройка панели 3x-ui
 
 Заходим на сервер и создаём подключение с данными параметрами:
 
@@ -221,8 +222,9 @@ systemctl restart ssh
 
 Если требуется лучшая маскировка заходим в Конфигурацию Xray - Маршрутизация:
 
-Inbound Tags api
-Outbound Tag api
+```text
+Inbound Tags: api
+Outbound Tag: api
 
 Domain: regexp:.*\.ru$,regexp:.*\.su$,regexp:.*\.rf$,regexp:.*yandex.*,regexp:.*\.рф$,regexp:.*mail\.ru$
 Outbound Tag: blocked
@@ -232,6 +234,7 @@ Outbound Tag: blocked
 
 Network: tcp, udp
 Outbound Tag: direct
+```
 
 - Правило `Domain: regexp` уменьшает вероятность того, что трафик к российским сайтам будет проходить через VPN
 
