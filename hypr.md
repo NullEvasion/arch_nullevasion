@@ -34,7 +34,7 @@ nano ~/.config/hypr/hyprland.conf
 ```ini
 env = LIBVA_DRIVER_NAME,radeonsi
 env = XDG_SESSION_TYPE,wayland
-env = GTK_THEME,Colloid-Dark
+env = GTK_THEME,Colloid-Dark-Black
 
 monitor = DP-2,1440x900@59.89,auto,1
 
@@ -96,20 +96,23 @@ decoration {
 
     blur {
         enabled = true
-        size = 10
-        passes = 4
+        size = 4
+        passes = 2
+        new_optimizations = true
         ignore_opacity = true
-        xray = true
-        noise = 0.02
-        contrast = 1.05
-        brightness = 0.9
+        xray = false
+        noise = 0.008
+        contrast = 1.0
+        brightness = 1.0
     }
 }
 
 general {
     border_size = 2
-    col.active_border = rgb(1793d1)
-    col.inactive_border = rgba(66666655)
+    col.active_border = rgb(1793d1) rgb(33ccff) 45deg
+    col.inactive_border = rgba(1793d11a)
+    gaps_in = 5
+    gaps_out = 10
 }
 
 animations {
@@ -123,19 +126,8 @@ animations {
 
 }
 
-layerrule {
-    name = blur
-    match:namespace = ^(waybar|wofi)$
-    blur = on
-    ignore_alpha = 0.1
-    animation = off
-}
-
-windowrule {
-    name = opacity
-    match:class = ^(kitty|thunar)$
-    opacity = 0.80
-}
+layerrule = blur on, match:namespace all
+windowrule = opacity 0.95, match:namespace all
 ```
 Параметры `env` для Nvidia нужны такие:
 
@@ -274,7 +266,7 @@ window#waybar {
 .modules-right {
     background: rgba(15, 20, 25, .35);
     color: #fff;
-    border: 3px solid rgba(23, 147, 209, .8);
+    border: 2px solid rgba(23, 147, 209, .8);
     border-radius: 12px;
     padding: 3px 12px;
     margin: 8px 0;
