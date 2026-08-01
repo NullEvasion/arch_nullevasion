@@ -420,30 +420,50 @@ sudo chown root:root /opt/Throne/ThroneCore
 sudo chmod u+s /opt/Throne/ThroneCore
 ```
 
-В настройках Маршрутизации, во вкладке Маршрут, выставляем данные параметры, если требуется чтобы прокси работал по правилам:
+В настройках Маршрутизации, во вкладке Маршрут, вводим такую схему, чтобы прокси работал по правилам:
 
-Outbound по умолчанию: direct
-Напрямую: пусто
-Прокси:
+- `Outbound по умолчанию`: direct
+- `Напрямую`: пусто
+- `Прокси`:
 
 ```ini
 domain:testingcf.jsdelivr.net
 domain:cdn.jsdelivr.net
 suffix:jsdelivr.net
 suffix:rutrk.org
+suffix:x.ai
+suffix:grok.com
+suffix:js.stripe.com
+suffix:m.stripe.com
+suffix:challenges.cloudflare.com
+suffix:wallhere.com
+suffix:static.wikia.nocookie.net
+suffix:githubusercontent.com
+keyword:rutracker
+keyword:redgifs
 ruleset:geosite-discord
 ruleset:geosite-youtube
 ruleset:geosite-google
+ruleset:geosite-openai
 ruleset:geosite-telegram
 ruleset:geosite-twitter
 ruleset:geosite-instagram
 ruleset:geosite-whatsapp
+ruleset:geosite-intel
 ```
 
-Блокировать: пусто
+`Блокировать`: пусто
 
 - в `Прокси` привёл примеры доменов
 - Таким образом прокси клиент будет прогонять через себя данные домены, а остальные будет отправлять мимо
+
+Теперь, в настройках маршрутизации, заходим в DNS и там выставляем данные параметры:
+
+- `Удалённый DNS`: tls://8.8.8.8
+- `DNS для прямых запросов`: 77.88.8.8
+- `DNS сервер по умолчанию`: direct
+- `Cache Capacity`: 65536
+- `Включить DNS-маршрутизацию`: ✓
 
 ---
 
