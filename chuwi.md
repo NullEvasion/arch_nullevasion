@@ -1,3 +1,12 @@
+```ini
+# #######################################################################################
+#                                                                                       #
+#   Cyberdeck                                                                           #
+#   Device: CHUWI Ubox (CWI604H)                                                        #
+#                                                                                       #
+# #######################################################################################
+```
+
 # Разметка диска
 
 Выбираем подходящий диск и начинаем размечать систему:
@@ -71,7 +80,7 @@ mount /dev/nvme0n1p1 /mnt/boot
 
 ```bash
 pacstrap -K /mnt \
-base linux linux-firmware amd-ucode \
+base linux linux-firmware intel-ucode \
 base-devel sudo nano git networkmanager \
 mtools mesa vulkan-radeon \
 lib32-mesa lib32-vulkan-radeon \
@@ -79,18 +88,18 @@ libva-mesa-driver libva-utils \
 xorg-xwayland
 ```
 
-- `sudo`: исполнение важных команд под `root` из под `user`
+- `sudo`: выполнение команд с правами администратора из-под обычного пользователя
 - `pacman`: пакетный менеджер
 - `base`: минимальный набор для работы системы (pacman, coreutils, findutils, grep, sed)
 - `linux`: ядро
 - `linux-firmware`: прошивки для оборудования
-- `amd-ucode`: для работы с процессором. Для intel нужен пакет `intel-ucode`
-- `nano`: консольный текстовый редактор
+- `amd-ucode`: для исправления ошибок процессора Для intel нужен пакет `intel-ucode`
+- `nano`: терминальный текстовый редактор
 - `mtools`: набор утилит для работы с MS-DOS/FAT
 - `networkmanager`: служба для управления сетевыми подключениями
 - `xorg-xwayland`: обеспечивает запуск X11-приложений в окружении Wayland, для стабильного запуска старых приложений
-- `git`: для скачивания и клонирования программ со сторонних репозиториев
-- `base-devel`: для компиляции и сборки программ из исходного кода
+- `git`: система контроля версий для клонирования и обновления репозиториев
+- `base-devel`: набор утилит для компиляции и сборки программ из исходного кода
 - `mesa`: графические библиотеки Mesa с поддержкой OpenGL и Vulkan
 - `vulkan-radeon`: драйвер Radeon для поддержки графического API Vulkan для Windows-игр
 - `lib32-mesa`: 32 битная версия основного драйвера
@@ -123,20 +132,26 @@ genfstab -U /mnt >> /mnt/etc/fstab
 arch-chroot /mnt
 ```
 
+Включаем сетевую службу:
+
+```bash
+systemctl enable NetworkManager
+```
+
 Создаём конфигурацию для хука encrypt:
 
 ```bash
 nano /etc/mkinitcpio.conf
 ```
 
-Заменяем строку HOOKS и добавляем MODULES:
+Изменяем строки HOOKS и MODULES:
 
 ```ini
 HOOKS=(base autodetect microcode modconf kms keyboard keymap consolefont block encrypt filesystems fsck)
 MODULES=(amdgpu)
 ```
 
-- хук encrypt нужен для доступа к зашифрованному разделу на этапе загрузки
+- хук `encrypt` нужен для доступа к зашифрованному разделу на этапе загрузки
 
 Применяем настройки:
 
@@ -162,12 +177,6 @@ echo "hostname" > /etc/hostname
 
 ```bash
 passwd
-```
-
-Добавляем NetworkManager в автозапуск:
-
-```bash
-systemctl enable NetworkManager
 ```
 
 ## Настройка языка
@@ -214,12 +223,6 @@ echo "LANG=ru_RU.UTF-8" > /etc/locale.conf
 
 ```bash
 bootctl install
-```
-
-Узнаём UUID LUKS:
-
-```bash
-blkid -s UUID -o value /dev/nvme0n1p3
 ```
 
 Редактируем конфигурацию загрузчика для LUKS-контейнера:

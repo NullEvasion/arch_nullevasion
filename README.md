@@ -7,6 +7,7 @@
 ## Содержание
 
 - [Arch Linux](arch.md)
+- [Создание сервера из ноутбука](arch_server.md)
 - [Установка Arch Linux с LUKS на кибердеку](chuwi.md)
 - [Конфигурация устройств](devices.md)
 - [Hyprland / Wayland](hypr.md)
@@ -21,6 +22,7 @@ arch_nullevasion/
 
 ├── README.md
 ├── arch.md
+├── arch_server.md
 ├── chuwi.md
 ├── devices.md
 ├── hypr.md

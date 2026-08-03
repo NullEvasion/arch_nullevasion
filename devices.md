@@ -62,3 +62,23 @@
 - **Клавиатура:** Keyron Scout G953
 - **Мышь:** ARDOR GAMING Respawn
 - **Корпус:** Ящик для инструментов Feng Bao
+
+## 💻 Ноутбук (Домашний сервер)
+
+### Hardware
+
+- **Устройство:** Asus M60J
+- **Процессор:** Intel Core i7-720QM
+- **Оперативная память:** 8 GB DDR3
+- **Накопитель:** Kingston SA400 SATA SSD 240 GB
+- **Графика:** GeForce GT 240M
+- **Сеть:**
+  - Wi-Fi
+  - Bluetooth
+  - Realtek RTL8168/8111 Gigabit Ethernet
+
+### Software
+
+- **OS:** Arch Linux
+- **Display:** Built-in 16"
+- **Window Manager:** TTY

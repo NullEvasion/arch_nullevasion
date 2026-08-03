@@ -1,64 +1,47 @@
-# Установка 3x-ui
+# Установка защиты и 3x-ui
 
 ```bash
 ssh root@айпи
 
-apt update && apt upgrade -y
+apt install fail2ban ufw
 
 bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh)
 ```
 
-- `ssh root@айпи`: подключение к серверу
-- `apt update && apt upgrade -y`: обновление системы
-- `curl -Ls`: скачивание и запуск установщика 3x-ui
+- `ssh root@айпи`: подключение к серверу.
+- `fail2ban`: нужен для защиты от перебора паролей SSH.
+- `ufw`: файрволл.
+- `curl -Ls`: скачивание и запуск установщика 3x-ui.
 
 Во время установки:
 
-- порт можно указать вручную
-- рекомендуется указать нестандартный порт
-- пример `28781`
-- при настройке SSL выбрать `0`
+- рекомендуется указать нестандартный порт, к примеру `28781`.
 
 После установки:
 
-- Копируем логин и пароль, авторизуемся на сервере
-- IP-адрес управления панелью ставим `127.0.0.1` и порт `28781`
+- копируем логин и пароль, авторизуемся в панели.
+- IP-адрес управления панелью ставим `127.0.0.1` и порт `28781`.
 
 ---
 
-# Установка fail2ban
 
-```bash
-apt install fail2ban -y
-
-systemctl enable fail2ban
-
-systemctl start fail2ban
-```
-
-- `fail2ban`: для защиты от перебора паролей SSH
-
-## Настройка fail2ban
+# Настройка fail2ban
 
 ```bash
 nano /etc/fail2ban/jail.local
 ```
 
 ```ini
+[DEFAULT]
+backend = systemd
+
 [sshd]
 enabled = true
 port = 24813
 filter = sshd
-logpath = /var/log/auth.log
 maxretry = 3
 bantime = 3600
 findtime = 600
-```
-
-Перезапускаем fail2ban для применения настроек:
-
-```bash
-systemctl restart fail2ban
 ```
 
 ---
@@ -74,18 +57,19 @@ nano /etc/sysctl.conf
 ```ini
 net.ipv6.conf.all.disable_ipv6 = 1
 net.ipv6.conf.default.disable_ipv6 = 1
+
 net.ipv4.tcp_syncookies = 1
-net.ipv4.tcp_max_syn_backlog = 2048
-net.ipv4.tcp_synack_retries = 5
+
 net.core.default_qdisc = fq
 net.ipv4.tcp_congestion_control = bbr
+
 net.core.somaxconn = 4096
-net.ipv4.tcp_fin_timeout = 20
+
 net.ipv4.icmp_echo_ignore_broadcasts = 1
 net.ipv4.icmp_ignore_bogus_error_responses = 1
+
 net.ipv4.conf.all.rp_filter = 1
-net.ipv4.udp_rmem_min = 16384
-net.ipv4.udp_wmem_min = 16384
+net.ipv4.conf.default.rp_filter = 1
 ```
 
 Применяем настройки:
@@ -146,7 +130,7 @@ Host имя
 	ServerAliveCountMax 3
 ```
 
-- теперь для входа на сервер можем всегда писать `ssh имя`
+- теперь для входа на сервер можем всегда писать `ssh имя`.
 
 Запрещаем вход по паролю и стабилизируем туннель:
 
@@ -165,56 +149,77 @@ ClientAliveCountMax 3
 MaxStartups 100:30:200
 ```
 
-## Настройка firewall
+Проверяем конфиг на наличее опечаток:
 
 ```bash
-apt install ufw -y
+sshd -t
+```
 
+## Настройка ufw
+
+```bash
 ufw allow 24813/tcp
 
 ufw allow 443/tcp
-```
 
-- `24813`: порт сервера
-- `443`: порт инбаунда
-
-```bash
 ufw default deny incoming
 
 ufw default allow outgoing
 
 ufw enable
 ```
+- `24813`: порт сервера.
+- `443`: порт инбаунда.
+- `deny incoming`: запрещает входящие подключения.
+- `allow outgoing`: разрешает исходящие подключения.
 
-- `deny incoming`: запрещает входящие подключения
-- `allow outgoing`: разрешает исходящие подключения
-
-## Запуск SSH:
+## Применение настроек и запуск служб
 
 ```bash
+systemctl enable fail2ban
+
+systemctl enable nftables
+
 systemctl enable ssh
+
+systemctl restart fail2ban
+
+systemctl restart nftables
 
 systemctl restart ssh
 ```
 
-- перезапуск ssh. После этого чистим хосты `ssh-keygen -R ip_адрес_сервера` и перезаходим на сервер
-- если не пускает то прописываем `sudo systemctl disable --now ssh.socket && sudo systemctl enable --now ssh` через VNC на сайте провайдера
+- после перезапуска ssh чистим хосты `ssh-keygen -R ip_адрес_сервера` и перезаходим на сервер.
+- если не пускает то прописываем `sudo systemctl disable --now ssh.socket && sudo systemctl enable --now ssh` через VNC, на сайте хостера.
 
 ---
 
 # Настройка панели 3x-ui
 
-Заходим на сервер и создаём подключение с данными параметрами:
+Заходим в панель:
 
-- Listen IP айпи_адрес_сервера
-- Порт 443
-- Протокол VLESS
-- Security Reality
-- Flow -
-- Транспорт XHTTP
-- uTLS firefox
-- Target www.python.org:443
-- SNI www.python.org
+```text
+https://IP_устройства:28781/URL_PATH
+```
+
+- `URL_PATH`: генерируется во время установки 3x-ui.
+
+Пример:
+
+```text
+https://192.168.150.8:28781/qmKoOMN2UIr9bLDNDC
+```
+
+Заходим в раздел Подключения и создаём новое подключение:
+
+- `Listen IP`: айпи_адрес_сервера
+- `Port`: 443
+- `Protocol`: VLESS
+- `Security`: Reality
+- `Transport`: XHTTP
+- `uTLS`: firefox
+- `Target`: www.python.org:443
+- `SNI`: www.python.org
 
 Пояснения:
 
@@ -236,27 +241,24 @@ Network: tcp, udp
 Outbound Tag: direct
 ```
 
-- Правило `Domain: regexp` уменьшает вероятность того, что трафик к российским сайтам будет проходить через VPN
+- правила `regexp:.*\.ru$`, `regexp:.*\.rf$` и т.д., блокируют подключения к русским доменам для уменьшения шанса обнаружения зарубежного трафика во время использования VPN. 
 
 ---
 
 # Команды для диагностики
 
 ```bash
-ss -tlnp | grep ssh
-
 ss -tlnp
 
-journalctl -u ssh -f
+journalctl -f
 
 ssh -O exit имя
 
 export TERM=xterm
 ```
 
-- `ss -tlnp | grep ssh`: проверить, какие порты слушает SSH
-- `ss -tlnp`: проверить вообще все порты
-- `journalctl -u ssh -f`: проверить логи при проблемах
+- `ss -tlnp`: проверка портов
+- `journalctl -f`: проверка логов
 - `ssh -O exit имя`: выход с сессии ssh
 - `export TERM=xterm`: если ругается на терминал Kitty
 
