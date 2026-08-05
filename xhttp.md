@@ -3,24 +3,16 @@
 ```bash
 ssh root@айпи
 
-apt install fail2ban ufw
+apt install fail2ban nftables
 
 bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh)
 ```
 
 - `ssh root@айпи`: подключение к серверу.
 - `fail2ban`: нужен для защиты от перебора паролей SSH.
-- `ufw`: файрволл.
+- `nftables`: файрволл.
 - `curl -Ls`: скачивание и запуск установщика 3x-ui.
-
-Во время установки:
-
 - рекомендуется указать нестандартный порт, к примеру `28781`.
-
-После установки:
-
-- копируем логин и пароль, авторизуемся в панели.
-- IP-адрес управления панелью ставим `127.0.0.1` и порт `28781`.
 
 ---
 
@@ -155,38 +147,66 @@ MaxStartups 100:30:200
 sshd -t
 ```
 
-## Настройка ufw
+## Настройка nftables
 
 ```bash
-ufw allow 24813/tcp
-
-ufw allow 443/tcp
-
-ufw default deny incoming
-
-ufw default allow outgoing
-
-ufw enable
+nano /etc/nftables.conf
 ```
-- `24813`: порт сервера.
-- `443`: порт инбаунда.
-- `deny incoming`: запрещает входящие подключения.
-- `allow outgoing`: разрешает исходящие подключения.
+
+```nft
+#!/usr/sbin/nft -f
+
+flush ruleset
+
+table inet filter {
+    chain input {
+        type filter hook input priority 0;
+        policy drop;
+
+        iif lo accept
+
+        ct state established,related accept
+
+        tcp dport { 24813, 443 } accept
+
+        ip protocol icmp accept
+    }
+
+    chain forward {
+        type filter hook forward priority 0;
+        policy drop;
+    }
+
+    chain output {
+        type filter hook output priority 0;
+        policy accept;
+    }
+}
+```
+
+- `24813`: порт SSH
+- `443`: порт XRAY
+
+Проверка конфига nftables на ошибки:
+
+```bash
+nft -c -f /etc/nftables.conf
+```
+
+Проверка открытых портов:
+
+```bash
+ss -tlnp | grep -E '24813|443|28781'
+```
 
 ## Применение настроек и запуск служб
 
 ```bash
-systemctl enable fail2ban
+systemctl enable --now fail2ban
 
-systemctl enable nftables
+systemctl enable --now nftables
 
-systemctl enable ssh
-
-systemctl restart fail2ban
-
-systemctl restart nftables
-
-systemctl restart ssh
+systemctl enable --now sshd
 ```
 
 - после перезапуска ssh чистим хосты `ssh-keygen -R ip_адрес_сервера` и перезаходим на сервер.
@@ -196,23 +216,27 @@ systemctl restart ssh
 
 # Настройка панели 3x-ui
 
+## Создание подключения
+
+Узнаём IP-адрес устройства:
+
+```bash
+ip route get 1.1.1.1 | awk '{print $7; exit}'
+```
+
 Заходим в панель:
 
 ```text
-https://IP_устройства:28781/URL_PATH
+https://127.0.0.1:28781/webBasePath
 ```
 
-- `URL_PATH`: генерируется во время установки 3x-ui.
+- чтобы найти `webBasePath` надо прописать `x-ui` и выбрать `View Current Settings`
 
-Пример:
+Заходим в раздел Клиенты и создаём новое подключение:
 
-```text
-https://192.168.150.8:28781/qmKoOMN2UIr9bLDNDC
-```
-
-Заходим в раздел Подключения и создаём новое подключение:
-
-- `Listen IP`: айпи_адрес_сервера
+- `Listen IP`: 0.0.0.0
+- `Стратегия адреса для ссылок`: Пользовательская
+- `Пользовательский адрес для ссылок`: IP_адрес_сервера
 - `Port`: 443
 - `Protocol`: VLESS
 - `Security`: Reality
@@ -221,11 +245,13 @@ https://192.168.150.8:28781/qmKoOMN2UIr9bLDNDC
 - `Target`: www.python.org:443
 - `SNI`: www.python.org
 
-Пояснения:
+Пояснение:
 
-- `Target www.python.org:443`: это пример. При необходимости можно использовать другой сайт. Параметры `SNI` должны соответствовать выбранному `Target`.
+- `Target`: любой HTTPS-сайт, поддерживающий HTTP/2 или HTTP/3. `SNI` должен совпадать с `Target`.
 
-Если требуется лучшая маскировка заходим в Конфигурацию Xray - Маршрутизация:
+# Настройка маршрутизации
+
+Заходим в Конфигурацию Xray - Маршрутизация и создаём правила строго в данной последовательности:
 
 ```text
 Inbound Tags: api
@@ -243,23 +269,27 @@ Outbound Tag: direct
 
 - правила `regexp:.*\.ru$`, `regexp:.*\.rf$` и т.д., блокируют подключения к русским доменам для уменьшения шанса обнаружения зарубежного трафика во время использования VPN. 
 
+```text
+Правила маршрутизации проверяются сверху вниз.
+
+После первого совпадения дальнейшая проверка прекращается.
+
+Поэтому сначала должны идти все правила, отправляющие трафик через `proxy`, затем правило блокировки `bittorrent`, а последним должно находиться правило:
+
+Network: tcp, udp
+Outbound Tag: direct
+
+Оно является правилом по умолчанию и отправляет весь оставшийся TCP и UDP трафик напрямую.
+```
+
 ---
 
 # Команды для диагностики
 
-```bash
-ss -tlnp
-
-journalctl -f
-
-ssh -O exit имя
-
-export TERM=xterm
-```
-
-- `ss -tlnp`: проверка портов
-- `journalctl -f`: проверка логов
-- `ssh -O exit имя`: выход с сессии ssh
-- `export TERM=xterm`: если ругается на терминал Kitty
+- `ss -tlnp`: проверка портов.
+- `journalctl -f`: проверка логов.
+- `ssh -O exit имя`: выход с сессии ssh на устройстве, с которого заходили на сервер.
+- `export TERM=xterm`: если ругается на терминал Kitty.
+- `systemctl status`: проверка работоспособности: `x-ui`, `ssh` и прочего, с выводом последних логов.
 
 ---

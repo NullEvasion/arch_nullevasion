@@ -10,9 +10,9 @@ nmap -sn 192.168.12.0/24
 
 Описание:
 
-- `ip a`: вывод сетевых интерфейсов и IP-адресов
-- `nmtui`: текстовый интерфейс для настройки NetworkManager
-- `nmap -sn`: поиск активных устройств в локальной сети
+- `ip a`: вывод сетевых интерфейсов и IP-адресов.
+- `nmtui`: текстовый интерфейс для настройки NetworkManager.
+- `nmap -sn`: поиск активных устройств в локальной сети.
 
 ## Подключение к Wi-Fi
 
@@ -30,11 +30,11 @@ station wlan0 connect имя_сети
 
 Функции:
 
-- `iwctl`: запуск консоли iwd для управления Wi-Fi
-- `device list`: вывод названий адаптеров
-- `station wlan0 scan`: сканирования сети
-- `station wlan0 get-networks`: вывод всех Wi-Fi-сетей, которые отсканировал `scan`
-- `station wlan0 connect имя_сети`: подключение к сети
+- `iwctl`: запуск консоли iwd для управления Wi-Fi.
+- `device list`: вывод названий адаптеров.
+- `station wlan0 scan`: сканирования сети.
+- `station wlan0 get-networks`: вывод всех Wi-Fi-сетей, которые отсканировал `scan`.
+- `station wlan0 connect имя_сети`: подключение к сети.
 
 Проверка работоспособности сети:
 
@@ -74,9 +74,9 @@ sudo ufw enable
 sudo ufw status verbose
 ```
 
-- `deny incoming`: запрет входящих подключений. Для разрешения добавляем порт `ufw allow порт/tcp`, также  можно удалить `ufw delete номер`
-- `allow outgoing`: разрешение на исходящие подключения
-- `status verbose`: проверка, чтобы убедиться, что всё работает
+- `deny incoming`: запрет входящих подключений. Для разрешения добавляем порт `ufw allow порт/tcp`, также  можно удалить `ufw delete номер`.
+- `allow outgoing`: разрешение на исходящие подключения.
+- `status verbose`: проверка, чтобы убедиться, что всё работает.
 
 ---
 
@@ -110,44 +110,44 @@ rm -rf yay
 
 Пакеты yay:
 
-- `cameractrls-bin`: для вебки
-- `brave-bin`: браузер
-- `ventoy-bin`: для ISO образов
-- `cnrdrvcups-lb-bin`: для принтеров
-- `throne-bin`: прокси клиент
-- `protonup-qt`: для windows игр
-- `protontricks`: для старых windows игр
+- `cameractrls-bin`: для вебки.
+- `brave-bin`: браузер.
+- `ventoy-bin`: для ISO образов.
+- `cnrdrvcups-lb-bin`: для принтеров.
+- `throne-bin`: прокси клиент.
+- `protonup-qt`: для windows игр.
+- `protontricks`: для старых windows игр.
 
 Пакеты pacman:
 
-- `cliphist`: менеджер буфера обмена
-- `eza`: для красивого ls
-- `awww`: для обоев рабочего стола
-- `fastfetch`: информация о системе в терминале
-- `reflector`: для зеркал
-- `code`: это VS Code
-- `pacman-contrib`: очистка пакетов через paccache
-- `openbsd-netcat`: локальный обменник сообщениями
-- `ufw`: firewall, защита сети
-- `htop`: сводка о внутренностях пк
-- `openssh`: для генерации ssh ключей
-- `udisks2, udiskie`: для монтирования дисков
-- `smartmontools`: для проверки дисков
-- `nmap`: для скана сети активные IP-адреса
-- `unarchiver`: предпросмотр архивов
-- `gvfs`: для работы с USB, корзиной и т.д. для файловых менеджеров
-- `gvfs-mtp`: для работы с Android по USB
-- `gvfs-afc`: для работы с iPhone по USB
-- `tumbler`: генерирует миниатюры изображений и видео
-- `ffmpegthumbnailer`: делает превью видео
-- `easyeffects lsp-plugins-lv2 calf mda.lv2 zam-plugins-lv2 distrho-ports-lv2 infamous-plugins-lv2`: для калибровки звука микрофона или наушников
-- `samba`: для шейра папок
-- `docker docker-compose`: контейнер для приложений
-- `timeshift`: для снимков системы
-- `thunar thunar-archive-plugin thunar-volman`: для файлового менеджера Thunar
-- `cups cups-filters ghostscript gsfonts`: для принтеров
-- `upower`: для вывода информации о батарее ноутбука
-- `winetricks mesa-utils lib32-nvidia-utils lib32-mesa-utils`: для запуска старых игр
+- `cliphist`: менеджер буфера обмена.
+- `eza`: для красивого ls.
+- `awww`: для обоев рабочего стола.
+- `fastfetch`: информация о системе в терминале.
+- `reflector`: для зеркал.
+- `code`: это VS Code.
+- `pacman-contrib`: очистка пакетов через paccache.
+- `openbsd-netcat`: локальный обменник сообщениями.
+- `ufw`: firewall, защита сети.
+- `htop`: сводка о внутренностях пк.
+- `openssh`: для генерации ssh ключей.
+- `udisks2, udiskie`: для монтирования дисков.
+- `smartmontools`: для проверки дисков.
+- `nmap`: для скана сети активные IP-адреса.
+- `unarchiver`: предпросмотр архивов.
+- `gvfs`: для работы с USB, корзиной и т.д. для файловых менеджеров.
+- `gvfs-mtp`: для работы с Android по USB.
+- `gvfs-afc`: для работы с iPhone по USB.
+- `tumbler`: генерирует миниатюры изображений и видео.
+- `ffmpegthumbnailer`: делает превью видео.
+- `easyeffects lsp-plugins-lv2 calf mda.lv2 zam-plugins-lv2 distrho-ports-lv2 infamous-plugins-lv2`: для калибровки звука микрофона или наушников.
+- `samba`: для шейра папок.
+- `docker docker-compose`: контейнер для приложений.
+- `timeshift`: для создания снимков системы.
+- `thunar thunar-archive-plugin thunar-volman`: для файлового менеджера Thunar.
+- `cups cups-filters ghostscript gsfonts`: для принтеров.
+- `upower`: для вывода информации о батарее ноутбука.
+- `winetricks mesa-utils lib32-nvidia-utils lib32-mesa-utils`: для запуска старых игр.
 
 ## Шрифты
 
@@ -161,7 +161,7 @@ rm -rf yay
 - `ttf-nerd-fonts-symbols`
 - `ttf-firacode-nerd`
 
-Для красивого шрифта и отображения кастомных иконок в системе:
+Для красивого шрифта в системе:
 
 ```bash
 fc-match "JetBrainsMono Nerd Font" && fc-match "Symbols Nerd Font"
@@ -226,9 +226,9 @@ PS1='[\u@\h \W]\$ '
 fastfetch
 ```
 
-- `fix-mirrors`: нужен для качественного обновления зеркал. В параметре `country` подберите ближайшие для вас страны, для лучшей скорости загрузки
-- `null`: предназначен для полного обновления системы
-- `fastfetch`: при каждом запуске терминала - выводит информацию о системе
+- `fix-mirrors`: нужен для качественного обновления зеркал. В параметре `country` подберите ближайшие для вас страны, для лучшей скорости загрузки.
+- `null`: предназначен для полного обновления системы.
+- `fastfetch`: при каждом запуске терминала - выводит информацию о системе.
 
 Применение настроек:
 
@@ -255,9 +255,9 @@ nano ~/.config/brave-flags.conf
 --disable-gpu-driver-bug-workarounds
 ```
 
-- `ozone-platform-hint`: автоматически определяет вашу графическую платформу
-- `password-store`: отключение использования системного хранилища паролей, gnome, kwallet
-- `enable-features`: включает рисование рамок и кнопок управления окном браузером через Wayland
+- `ozone-platform-hint`: автоматически определяет вашу графическую платформу.
+- `password-store`: отключение использования системного хранилища паролей, gnome, kwallet.
+- `enable-features`: включает рисование рамок и кнопок управления окном браузером через Wayland.
 - `disable-gpu-driver-bug-workarounds`: отключает костыли, которые Chromium применяет для конкретных драйверов видеокарт, если знает, что в них есть баги.
 - также желательно выключить QUIC: brave://flags/#enable-quic
 
@@ -329,21 +329,21 @@ docker compose up -d
 
 Выставляем параметры уже на сервере http://localhost:8096:
 
-- Добавляем медиатеку
-- Playback - Transcoding
-- Hardware acceleration - Nvidia NVENC
-- Enable hardware decoding for - все галочки
-- Enable enhanced NVDEC decoder +
-- Enable hardware encoding +
-- Allow encoding in HEVC format +
-- Enable Tone mapping +
-- Encoding preset - superfast
-- Throttle Transcoding +
+- `Добавить медиатеку`: +
+- `Playback`: Transcoding
+- `Hardware acceleration`: Nvidia NVENC
+- `Enable hardware decoding for`: все галочки
+- `Enable enhanced NVDEC decoder`: +
+- `Enable hardware encoding`: +
+- `Allow encoding in HEVC format`: +
+- `Enable Tone mapping`: +
+- `Encoding preset`: superfast
+- `Throttle Transcoding`: +
 - Если видео выводит мало fps: лимит битрейта во время просмотра видео поставить 15 Мбит/с
 
 Примечание:
 
-- если в системе установлен пакет `ufw` с параметром `deny incoming`, то нужно открыть порт 8096 `sudo ufw allow 8096/tcp`
+- если в системе установлен пакет `ufw` с параметром `deny incoming`, то нужно открыть порт 8096 `sudo ufw allow 8096/tcp`.
 
 ## CUPS
 
@@ -353,7 +353,7 @@ sudo systemctl enable --now cups
 yay -S cnrdrvcups-lb-bin
 ```
 
-- настройка: http://localhost:631 Администрирование - Добавить принтер
+- настройка: http://localhost:631 Администрирование - Добавить принтер.
 
 
 ## Upower
@@ -378,9 +378,9 @@ sudo umount /dev/sdb
 sudo ventoy -i /dev/sdb
 ```
 
-- `lsblk`: список всех дисков, видимых системе
-- `smartctl -a`: вывод информации о конкретном диске
-- `umount`: размонтировать диск
+- `lsblk`: список всех дисков, видимых системе.
+- `smartctl -a`: вывод информации о конкретном диске.
+- `umount`: размонтировать диск.
 - `ventoy -i`: установить Ventoy на диск. ВНИМАНИЕ: Стирает все данные на накопителе!
 
 ## Paccache
@@ -389,8 +389,8 @@ sudo ventoy -i /dev/sdb
 sudo paccache -rk0
 ```
 
-- `-rk0 -rk2 -rk3`: флаг `-rk3` оставляет 3 пакета, `-rk2` оставляет 2 пакета `-rk0` удаляет все пакеты
-- не рекомендуется постоянно использовать `-rk0`, так как исчезает возможность отката пакетов.
+- `-rk0 -rk2 -rk3`: флаг `-rk3` оставляет 3 пакета, `-rk2` оставляет 2 пакета `-rk0` удаляет все пакеты.
+- не рекомендуется постоянно использовать `-rk0`, так как исчезает возможность отката пакетов..
 
 ## Netcat
 
@@ -408,8 +408,8 @@ nc -l -p 9999
 nc 192.168.1.15 9999
 ```
 
-- `-l -p`: флаги включающие прослушивание на порту первого компьютера, обычно для netcat это 9999 порт
-- `nc айпи порт`: подключение к слушающему узлу, чтобы узнать айпи первого компьютера пропишите `ip a`
+- `-l -p`: флаги включающие прослушивание на порту первого компьютера, обычно для netcat это 9999 порт.
+- `nc айпи порт`: подключение к слушающему узлу, чтобы узнать айпи первого компьютера пропишите `ip a`.
 
 ## Throne
 
@@ -456,16 +456,39 @@ ruleset:geosite-intel
 
 `Блокировать`: пусто
 
-- в `Прокси` привёл примеры доменов
-- Таким образом прокси клиент будет прогонять через себя данные домены, а остальные будет отправлять мимо
+- в `Прокси` привёл примеры доменов.
+- таким образом прокси клиент будет прогонять через себя данные домены, а остальные будет отправлять мимо.
 
-Теперь, в настройках маршрутизации, заходим в DNS и там выставляем данные параметры:
+В настройках маршрутизации, заходим в DNS и там выставляем данные параметры:
 
 - `Удалённый DNS`: tls://8.8.8.8
 - `DNS для прямых запросов`: 77.88.8.8
 - `DNS сервер по умолчанию`: direct
 - `Cache Capacity`: 65536
 - `Включить DNS-маршрутизацию`: ✓
+
+## Timeshift
+
+Для того чтобы сделать полный снимок системы, включая директорию `/home`, требуется прописать конфигурацию:
+
+```bash
+sudo nano /etc/timeshift/timeshift.json
+```
+
+Добавляем параметр в `exclude`:
+
+```ini
+  "exclude" : [
+    " + /home/nullevasion/**",
+    "+ /root/**"
+  ],
+```
+
+Создаём снимок системы:
+
+```bash
+sudo timeshift --create --comments "Full backup with home"
+```
 
 ---
 
@@ -487,8 +510,8 @@ wpctl status
 wpctl set-default номер
 ```
 
-- `status`: вывод списка аудио и видео, `*` - дефолт
-- `set-default`: поменять дефолтное значение
+- `status`: вывод списка аудио и видео, `*` - дефолт.
+- `set-default`: поменять дефолтное значение.
 
 ## Oblivion Lost Remake 3.0
 
@@ -497,8 +520,8 @@ wpctl set-default номер
 protontricks -l
 ```
 
-- перед этим сначала запускаем игру, посредством добавления .exe в библиотеку Steam и активации Совместимости с Proton
-- это нужно для создания Wine-префикса
+- перед этим сначала запускаем игру, посредством добавления .exe в библиотеку Steam и активации Совместимости с Proton.
+- это нужно для создания Wine-префикса.
 
 Ставим нужные драйвера:
 
@@ -511,5 +534,26 @@ protontricks 4269973641 d3dx9 openal d3dcompiler_43
 ```ini
 PULSE_LATENCY_MSEC=60 WINEDLLOVERRIDES="openal32=n,b;dsound=n,b" %command% -ltx user_risotto.ltx -simple_script_lua_debug -simple_lua_debug
 ```
+
+## Восстановление системы через Timeshift с Live USB
+
+Восстановление снимков с LUKS-контейнера:
+
+```bash
+cryptsetup open /dev/nvme0n1p2 cryptroot
+
+mount /dev/mapper/cryptroot /mnt
+
+sudo timeshift --snapshot-device /dev/mapper/cryptroot --restore
+```
+
+Восстановление снимков обычной системы:
+
+```bash
+mount /dev/nvme0n1p1 /mnt/boot
+
+sudo timeshift --restore
+```
+
 
 ---

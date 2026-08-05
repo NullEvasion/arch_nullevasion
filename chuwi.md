@@ -20,22 +20,20 @@ cfdisk /dev/nvme0n1
 Пример разметки разделов:
 
 - /dev/nvme0n1p1 1 ГБ EFI System
-- /dev/nvme0n1p2 16 ГБ Linux swap
-- /dev/nvme0n1p3 Оставшееся пространство Linux root (x86-64)
-- размер swap зависит от объёма ОЗУ и необходимости использования гибернации
+- /dev/nvme0n1p2 Оставшееся пространство Linux root (x86-64)
 
 ## Создание LUKS-контейнера и форматирование системы
 
 Создаём LUKS-контейнер:
 
 ```bash
-cryptsetup luksFormat --type luks2 /dev/nvme0n1p3
+cryptsetup luksFormat --type luks2 /dev/nvme0n1p2
 
-cryptsetup open /dev/nvme0n1p3 cryptroot
+cryptsetup open /dev/nvme0n1p2 cryptroot
 ```
 
-- `luksFormat --type luks2 /dev/nvme0n1p3`: создаёт шифрованный LUKS-контейнер
-- `open /dev/nvme0n1p3 cryptroot`: открывает контейнер
+- `luksFormat --type luks2 /dev/nvme0n1p2`: создаёт шифрованный LUKS-контейнер
+- `open /dev/nvme0n1p2 cryptroot`: открывает контейнер
 
 Форматируем диск:
 
@@ -47,14 +45,6 @@ mkfs.ext4 /dev/mapper/cryptroot
 
 - `mkfs.vfat`: форматирует EFI-раздел в FAT32
 - `mkfs.ext4`: форматирует открытый LUKS-контейнер в ext4
-
-Инициализируем и включаем Swap:
-
-```bash
-mkswap /dev/nvme0n1p2
-
-swapon /dev/nvme0n1p2
-```
 
 ## Монтирование системы
 
@@ -80,32 +70,34 @@ mount /dev/nvme0n1p1 /mnt/boot
 
 ```bash
 pacstrap -K /mnt \
-base linux linux-firmware intel-ucode \
+base linux linux-firmware amd-ucode \
 base-devel sudo nano git networkmanager \
 mtools mesa vulkan-radeon \
 lib32-mesa lib32-vulkan-radeon \
 libva-mesa-driver libva-utils \
-xorg-xwayland
+xorg-xwayland reflector
 ```
 
-- `sudo`: выполнение команд с правами администратора из-под обычного пользователя
-- `pacman`: пакетный менеджер
-- `base`: минимальный набор для работы системы (pacman, coreutils, findutils, grep, sed)
-- `linux`: ядро
-- `linux-firmware`: прошивки для оборудования
-- `amd-ucode`: для исправления ошибок процессора Для intel нужен пакет `intel-ucode`
-- `nano`: терминальный текстовый редактор
-- `mtools`: набор утилит для работы с MS-DOS/FAT
-- `networkmanager`: служба для управления сетевыми подключениями
-- `xorg-xwayland`: обеспечивает запуск X11-приложений в окружении Wayland, для стабильного запуска старых приложений
-- `git`: система контроля версий для клонирования и обновления репозиториев
-- `base-devel`: набор утилит для компиляции и сборки программ из исходного кода
-- `mesa`: графические библиотеки Mesa с поддержкой OpenGL и Vulkan
-- `vulkan-radeon`: драйвер Radeon для поддержки графического API Vulkan для Windows-игр
-- `lib32-mesa`: 32 битная версия основного драйвера
-- `lib32-vulkan-radeon`: 32 битная версия Vulkan-драйвера
-- `libva-mesa-driver`: драйвер для аппаратного ускорения видео
-- `libva-utils`: набор консольных утилит для проверки и тестирования аппаратного ускорения видео
+- `sudo`: выполнение команд с правами администратора из-под обычного пользователя.
+- `pacman`: пакетный менеджер.
+- `base`: минимальный набор для работы системы (pacman, coreutils, findutils, grep, sed).
+- `linux`: ядро.
+- `linux-firmware`: прошивки для оборудования.
+- `amd-ucode`: для исправления ошибок процессора.
+- `nano`: терминальный текстовый редактор.
+- `mtools`: набор утилит для работы с MS-DOS/FAT.
+- `networkmanager`: служба для управления сетевыми подключениями.
+- `xorg-xwayland`: обеспечивает запуск X11-приложений в окружении Wayland, для стабильного запуска старых приложений.
+- `git`: система контроля версий для клонирования и обновления репозиториев.
+- `base-devel`: набор утилит для компиляции и сборки программ из исходного кода.
+- `mesa`: графические библиотеки Mesa с поддержкой OpenGL и Vulkan.
+- `vulkan-radeon`: драйвер Radeon для поддержки графического API Vulkan для Windows-игр.
+- `lib32-mesa`: 32 битная версия основного драйвера.
+- `lib32-vulkan-radeon`: 32 битная версия Vulkan-драйвера.
+- `libva-mesa-driver`: драйвер для аппаратного ускорения видео.
+- `libva-utils`: набор консольных утилит для проверки и тестирования аппаратного ускорения видео.
+- `reflector`: автоматически подбирает и обновляет список самых быстрых зеркал Arch Linux.
+- `timeshift`: для создания снимков системы.
 
 ## Прочие настройки
 
@@ -151,8 +143,6 @@ HOOKS=(base autodetect microcode modconf kms keyboard keymap consolefont block e
 MODULES=(amdgpu)
 ```
 
-- хук `encrypt` нужен для доступа к зашифрованному разделу на этапе загрузки
-
 Применяем настройки:
 
 ```bash
@@ -170,13 +160,31 @@ hwclock --systohc
 Даём имя компьютеру:
 
 ```bash
-echo "hostname" > /etc/hostname
+echo "chuwi" > /etc/hostname
 ```
 
 Задаём пароль для root:
 
 ```bash
 passwd
+```
+
+Добавляем кастомную команду для обновления зеркал:
+
+```bash
+nano ~/.bashrc
+```
+
+```ini
+fix-mirrors() {
+    sudo reflector \
+        --latest 20 \
+        --country Russia,Germany,Netherlands \
+        --age 12 \
+        --protocol https \
+        --sort rate \
+        --save /etc/pacman.d/mirrorlist
+}
 ```
 
 ## Настройка языка
@@ -192,8 +200,8 @@ KEYMAP=us
 FONT=cyr-sun16
 ```
 
-- `KEYMAP=us`: задаёт раскладку клавиатуры в TTY
-- `FONT=cyr-sun16`: загрузка шрифта, содержащего кириллицу, для отображения русского языка в TTY
+- `KEYMAP=us`: задаёт раскладку клавиатуры в TTY.
+- `FONT=cyr-sun16`: загрузка шрифта, содержащего кириллицу, для отображения русского языка в TTY.
 
 Настраиваем отображение языков в системе:
 
@@ -214,8 +222,8 @@ locale-gen
 echo "LANG=ru_RU.UTF-8" > /etc/locale.conf
 ```
 
-- `locale-gen`: генерируем выбранные локали
-- `echo "LANG=ru_RU.UTF-8" > /etc/locale.conf`: устанавливает локаль системы по умолчанию
+- `locale-gen`: генерируем выбранные локали.
+- `echo "LANG=ru_RU.UTF-8" > /etc/locale.conf`: устанавливает локаль системы по умолчанию.
 
 ## Работа с загрузчиком
 
@@ -224,6 +232,14 @@ echo "LANG=ru_RU.UTF-8" > /etc/locale.conf
 ```bash
 bootctl install
 ```
+
+Прописываем для вывода UUID:
+
+```bash
+blkid -s UUID -o value /dev/nvme0n1p2
+```
+
+- далее надо подставить его вместо параметра `UUID_LUKS` в `arch.conf`.
 
 Редактируем конфигурацию загрузчика для LUKS-контейнера:
 
@@ -238,8 +254,6 @@ initrd /amd-ucode.img
 initrd /initramfs-linux.img
 options cryptdevice=UUID=UUID_LUKS:cryptroot root=/dev/mapper/cryptroot rw
 ```
-
-- чтобы узнать `UUID_LUKS` прописываем `blkid -s UUID -o value /dev/nvme0n1p3`
 
 Редактируем основную конфигурацию загрузчика:
 
@@ -266,7 +280,7 @@ cryptsetup close cryptroot
 reboot
 ```
 
-- в промежутке перезапуска - вытаскиваем загрузочный диск
+- в промежутке перезапуска - вытаскиваем загрузочный диск.
 
 Авторизуемся под root и создаём пользователя:
 
