@@ -546,11 +546,8 @@ https://127.0.0.1:28781/webBasePath
 Inbound Tags: api
 Outbound Tag: api
 
-Inbound Tags: in-443-tcp
-Outbound Tag: proxy
-
 Domain: 
-suffix:jsdelivr.net,suffix:rutrk.org,suffix:wallhere.com,keyword:rutracker,keyword:redgifs,ruleset:geosite-discord,ruleset:geosite-youtube,ruleset:geosite-google-gemini,ruleset:geosite-openai,ruleset:geosite-telegram,ruleset:geosite-twitter,ruleset:geosite-instagram,ruleset:geosite-whatsapp,ruleset:geosite-intel
+domain:jsdelivr.net,domain:wallhere.com,domain:redgifs.com,geosite:discord,geosite:youtube,geosite:google-gemini,geosite:openai,geosite:telegram,geosite:twitter,geosite:instagram,geosite:whatsapp,geosite:intel,geosite:rutracker
 Outbound Tag: proxy
 
 Protocol: bittorrent
