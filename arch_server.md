@@ -521,13 +521,13 @@ https://127.0.0.1:28781/webBasePath
 
 Заходим в раздел Клиенты и создаём новое подключение:
 
-- `Listen IP`: 0.0.0.0
+- `Адрес`: 0.0.0.0
 - `Стратегия адреса для ссылок`: Пользовательская
 - `Пользовательский адрес для ссылок`: IP_адрес_сервера
-- `Port`: 443
-- `Protocol`: VLESS
-- `Security`: Reality
-- `Transport`: XHTTP
+- `Порт`: 443
+- `Протокол`: VLESS
+- `Безопасность`: Reality
+- `Транспорт`: XHTTP
 - `uTLS`: firefox
 - `Target`: www.python.org:443
 - `SNI`: www.python.org
@@ -550,7 +550,7 @@ Inbound Tags: in-443-tcp
 Outbound Tag: proxy
 
 Domain: 
-suffix:jsdelivr.net,suffix:rutrk.org,suffix:challenges.cloudflare.com,suffix:wallhere.com,suffix:static.wikia.nocookie.net,suffix:githubusercontent.com,keyword:rutracker,keyword:redgifs,ruleset:geosite-discord,ruleset:geosite-youtube,ruleset:geosite-google,ruleset:geosite-openai,ruleset:geosite-telegram,ruleset:geosite-twitter,ruleset:geosite-instagram,ruleset:geosite-whatsapp,ruleset:geosite-intel
+suffix:jsdelivr.net,suffix:rutrk.org,suffix:wallhere.com,keyword:rutracker,keyword:redgifs,ruleset:geosite-discord,ruleset:geosite-youtube,ruleset:geosite-google-gemini,ruleset:geosite-openai,ruleset:geosite-telegram,ruleset:geosite-twitter,ruleset:geosite-instagram,ruleset:geosite-whatsapp,ruleset:geosite-intel
 Outbound Tag: proxy
 
 Protocol: bittorrent
