@@ -169,6 +169,18 @@ fc-match "JetBrainsMono Nerd Font" && fc-match "Symbols Nerd Font"
 gsettings set org.gnome.desktop.interface font-name "JetBrainsMono Nerd Font 11"
 ```
 
+Для чёрного фона Thunar:
+
+```bash
+cd /tmp
+
+git clone https://github.com/vinceliuice/Colloid-gtk-theme.git
+
+cd Colloid-gtk-theme
+
+./install.sh -t default -c dark --tweaks black -d ~/.themes
+```
+
 ---
 
 # Настройки терминала
