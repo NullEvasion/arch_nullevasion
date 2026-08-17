@@ -439,31 +439,22 @@ sudo chmod u+s /opt/Throne/ThroneCore
 - `Прокси`:
 
 ```ini
-domain:testingcf.jsdelivr.net
-domain:cdn.jsdelivr.net
-
-keyword:rutracker
-keyword:redgifs
-
+domain:waycloud.store
+domain:ntc.rkn.quest
+domain:meta.prismlauncher.org
 suffix:jsdelivr.net
-suffix:rutrk.org
-suffix:challenges.cloudflare.com
 suffix:wallhere.com
-suffix:static.wikia.nocookie.net
-suffix:githubusercontent.com
-
-ruleset:geosite-github
-ruleset:geosite-gitlab
-ruleset:geosite-cloudflare
+keyword:redgifs
 ruleset:geosite-discord
 ruleset:geosite-youtube
-ruleset:geosite-google
+ruleset:geosite-google-gemini
 ruleset:geosite-openai
 ruleset:geosite-telegram
 ruleset:geosite-twitter
 ruleset:geosite-instagram
 ruleset:geosite-whatsapp
 ruleset:geosite-intel
+ruleset:geosite-rutracker
 ```
 
 `Блокировать`: пусто
