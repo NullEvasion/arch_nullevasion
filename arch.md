@@ -136,7 +136,7 @@ rm -rf yay
 - `nmap`: для скана сети активные IP-адреса.
 - `unarchiver`: предпросмотр архивов.
 - `gvfs`: для работы с USB, корзиной и т.д. для файловых менеджеров.
-- `gvfs-mtp`: для работы с Android по USB.
+- `gvfs-mtp android-tools`: для работы с Android по USB.
 - `gvfs-afc`: для работы с iPhone по USB.
 - `tumbler`: генерирует миниатюры изображений и видео.
 - `ffmpegthumbnailer`: делает превью видео.
@@ -469,6 +469,20 @@ ruleset:geosite-rutracker
 - `DNS сервер по умолчанию`: direct
 - `Cache Capacity`: 65536
 - `Включить DNS-маршрутизацию`: ✓
+
+## Android tools
+
+```bash
+adb shell pm list packages
+
+adb shell pm uninstall --user 0 `пакет`
+
+adb install name.apk
+```
+
+- `list packages`: список всех установленных пакетов.
+- `unistall`: удаление пакета.
+- `install`: установка apk. Предварительно нужно перейти в директорию где он находится.
 
 ## Timeshift
 
