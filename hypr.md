@@ -43,7 +43,7 @@ nano ~/.config/hypr/hyprland.conf
 ```ini
 env = LIBVA_DRIVER_NAME,radeonsi
 env = XDG_SESSION_TYPE,wayland
-env = GTK_THEME,Colloid-Dark-Black
+env = GTK_THEME,Colloid-Dark
 
 monitor = DP-2,1440x900@59.89,auto,1
 
