@@ -1,7 +1,10 @@
 # Установка защиты и 3x-ui
 
 ```bash
-ssh root@айпи
+
+ssh root@айпи_сервера
+
+apt update
 
 apt install fail2ban nftables
 
@@ -141,10 +144,12 @@ ClientAliveCountMax 3
 MaxStartups 100:30:200
 ```
 
-Проверяем конфиг на наличее опечаток:
+Проверяем конфиг на наличее опечаток и перезапускаем `ssh`:
 
 ```bash
 sshd -t
+
+systemctl restart ssh
 ```
 
 ## Настройка nftables
@@ -196,7 +201,7 @@ nft -c -f /etc/nftables.conf
 Проверка открытых портов:
 
 ```bash
-ss -tlnp | grep -E '24813|443|28781'
+ss -tlnp | grep sshd
 ```
 
 ## Применение настроек и запуск служб
@@ -206,10 +211,10 @@ systemctl enable --now fail2ban
 
 systemctl enable --now nftables
 
-systemctl enable --now sshd
+systemctl enable --now ssh
 ```
 
-- после перезапуска ssh чистим хосты `ssh-keygen -R ip_адрес_сервера` и перезаходим на сервер.
+- выходим с сервера командой `exit` и чистим хосты на устройстве с которого заходили, для чистого входа, командой `rm -rf ~/.ssh/known_hosts` и повторно заходим на сервер.
 - если не пускает то прописываем `sudo systemctl disable --now ssh.socket && sudo systemctl enable --now ssh` через VNC, на сайте хостера.
 
 ---
@@ -217,12 +222,6 @@ systemctl enable --now sshd
 # Настройка панели 3x-ui
 
 ## Создание подключения
-
-Узнаём IP-адрес устройства:
-
-```bash
-ip route get 1.1.1.1 | awk '{print $7; exit}'
-```
 
 Заходим в панель:
 
@@ -234,7 +233,6 @@ https://127.0.0.1:28781/webBasePath
 
 Заходим в раздел Клиенты и создаём новое подключение:
 
-- `Listen IP`: 0.0.0.0
 - `Стратегия адреса для ссылок`: Пользовательская
 - `Пользовательский адрес для ссылок`: IP_адрес_сервера
 - `Port`: 443
