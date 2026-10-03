@@ -342,9 +342,6 @@ net.ipv6.conf.default.disable_ipv6 = 1
 
 net.ipv4.tcp_syncookies = 1
 
-net.core.default_qdisc = fq
-net.ipv4.tcp_congestion_control = bbr
-
 net.core.somaxconn = 4096
 
 net.ipv4.icmp_echo_ignore_broadcasts = 1

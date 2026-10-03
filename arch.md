@@ -1,3 +1,12 @@
+```ini
+# #######################################################################################
+#                                                                                       #
+#   Arch Linux                                                                          #
+#   Kernel: 7.2.6                                                                       #
+#                                                                                       #
+# #######################################################################################
+```
+
 # Сеть
 
 ```bash
@@ -439,22 +448,19 @@ sudo chmod u+s /opt/Throne/ThroneCore
 - `Прокси`:
 
 ```ini
-domain:waycloud.store
+domain:mod.io
 domain:ntc.rkn.quest
-domain:meta.prismlauncher.org
 suffix:jsdelivr.net
 suffix:wallhere.com
-keyword:redgifs
-ruleset:geosite-discord
 ruleset:geosite-youtube
 ruleset:geosite-google-gemini
 ruleset:geosite-openai
 ruleset:geosite-telegram
 ruleset:geosite-twitter
 ruleset:geosite-instagram
-ruleset:geosite-whatsapp
 ruleset:geosite-intel
 ruleset:geosite-rutracker
+ruleset:geosite-discord
 ```
 
 `Блокировать`: пусто
@@ -571,6 +577,5 @@ mount /dev/nvme0n1p1 /mnt/boot
 
 sudo timeshift --restore
 ```
-
 
 ---

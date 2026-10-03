@@ -11,6 +11,8 @@
 - [Установка Arch Linux с LUKS на кибердеку](chuwi.md)
 - [Конфигурация устройств](devices.md)
 - [Hyprland / Wayland](hypr.md)
+- [Скрипт для поднятия VPN](null.sh)
+- [Инструкция по поднятию VPN со скриптом](null_vpn.md)
 - [VPS, VPN, 3x-ui и прокси](xhttp.md)
 
 ---
@@ -26,6 +28,8 @@ arch_nullevasion/
 ├── chuwi.md
 ├── devices.md
 ├── hypr.md
+├── null.sh
+├── null_vpn.md
 └── xhttp.md
 ```
 

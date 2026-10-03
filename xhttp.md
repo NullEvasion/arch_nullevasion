@@ -1,3 +1,12 @@
+```ini
+# #######################################################################################
+#                                                                                       #
+#   Ubuntu                                                                              #
+#   Version: 26.04                                                                      #
+#                                                                                       #
+# #######################################################################################
+```
+
 # Установка защиты и 3x-ui
 
 ```bash
@@ -54,9 +63,6 @@ net.ipv6.conf.all.disable_ipv6 = 1
 net.ipv6.conf.default.disable_ipv6 = 1
 
 net.ipv4.tcp_syncookies = 1
-
-net.core.default_qdisc = fq
-net.ipv4.tcp_congestion_control = bbr
 
 net.core.somaxconn = 4096
 
