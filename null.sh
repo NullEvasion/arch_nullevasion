@@ -170,7 +170,7 @@ echo
 echo "==== Готово ===="
 echo
 echo "SSH:       $SSH_PORT"
-echo "3x-ui:     http://127.0.0.1:$XUI_PORT$XUI_WEB_BASE_PATH"
+echo "3x-ui:     http://127.0.0.1:$XUI_PORT/$XUI_WEB_BASE_PATH"
 echo "Логин:     $XUI_USERNAME"
 echo "Пароль:    $XUI_PASSWORD"
 echo
