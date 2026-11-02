@@ -159,7 +159,7 @@ echo "arch-server" > /etc/hostname
 passwd
 ```
 
-Добавляем кастомную команду для обновления зеркал:
+Добавляем кастомную команду для обновления зеркал и системы:
 
 ```bash
 nano ~/.bashrc
@@ -167,6 +167,7 @@ nano ~/.bashrc
 
 ```ini
 fix-mirrors() {
+    echo ":: Обновление списка зеркал..."
     sudo reflector \
         --latest 20 \
         --country Russia,Germany,Netherlands \
@@ -174,6 +175,26 @@ fix-mirrors() {
         --protocol https \
         --sort rate \
         --save /etc/pacman.d/mirrorlist
+}
+
+null() {
+    echo ":: Обновление ключей Arch Linux..."
+    sudo pacman -Sy --needed --noconfirm archlinux-keyring || return
+
+    echo ":: Запуск обновления системы..."
+    sudo pacman -Syu --noconfirm || {
+        fix-mirrors
+        echo ":: Повторная попытка обновления..."
+        sudo pacman -Syu --noconfirm || return
+    }
+
+    echo ":: Очистка кэша пакетов..."
+    sudo paccache -r -k 2
+
+    echo ":: Сохранение списка установленных пакетов..."
+    pacman -Qqen | sort > ~/.pkg_native.txt
+
+    echo ":: Готово."
 }
 ```
 
