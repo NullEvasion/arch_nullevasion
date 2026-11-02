@@ -2,7 +2,7 @@
 # #######################################################################################
 #                                                                                       #
 #   Hyprland                                                                            #
-#   Version: 0.56.1                                                                     #
+#   Version: 0.57.0                                                                     #
 #                                                                                       #
 # #######################################################################################
 ```
@@ -34,120 +34,181 @@ sudo pacman -S \
 
 # Редактирование конфигураций
 
-## Hyprland.conf
+## Hyprland.lua
 
 ```bash
-nano ~/.config/hypr/hyprland.conf
+nano ~/.config/hypr/hyprland.lua
 ```
 
-```ini
-env = LIBVA_DRIVER_NAME,radeonsi
-env = XDG_SESSION_TYPE,wayland
-env = GTK_THEME,Colloid-Dark
+```lua
+-- Hyprland 0.57+ Lua configuration
 
-monitor = DP-2,1440x900@59.89,auto,1
+-- Environment variables (set before the display server initializes)
+hl.env("LIBVA_DRIVER_NAME", "radeonsi")
+hl.env("XDG_SESSION_TYPE", "wayland")
+hl.env("GTK_THEME", "Colloid-Dark")
 
-exec-once = dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
-exec-once = systemctl --user start hyprpolkitagent
-exec-once = waybar
-exec-once = mako
-exec-once = awww-daemon
-exec-once = sleep 3 && easyeffects --gapplication-service
-exec-once = ~/.config/hypr/wallpaper.sh
-exec-once = wl-paste --type text --watch cliphist store
-exec-once = wl-paste --type image --watch cliphist store
+-- Monitor: fallback rule for any monitor without a more specific rule
+hl.monitor({
+    output = "DP-2",
+    mode = "1440x900@59.89",
+    position = "auto",
+    scale = 1,
+})
 
-bind = SUPER, M, exit
-bind = SUPER, C, killactive
-bind = SUPER, Q, exec, kitty
-bind = SUPER, 1, workspace, 1
-bind = SUPER, 2, workspace, 2
-bind = SUPER, 3, workspace, 3
-bind = SUPER, 4, workspace, 4
-bind = SUPER, 5, workspace, 5
-bind = SUPER, 6, workspace, 6
-bind = SUPER, E, exec, thunar
-bind = SUPER, F, fullscreen, 0
-bind = SUPER, UP, movefocus, u
-bind = SUPER, X, togglefloating
-bind = SUPER, LEFT, movefocus, l
-bind = SUPER, DOWN, movefocus, d
-bind = SUPER, RIGHT, movefocus, r
-bind = SUPER SHIFT, C, forcekillactive
-bind = SUPER SHIFT, R, exec, hyprctl reload
-bind = SUPER, Z, exec, hyprshot -m region --clipboard-only
-bind = SUPER, V, exec, cliphist list | wofi --dmenu | cliphist decode | wl-copy
-bind = SUPER, R, exec, wofi --show drun --normal-window --style ~/.config/wofi/style.css
+-- Autostart
+hl.on("hyprland.start", function()
+    hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
+    hl.exec_cmd("systemctl --user start hyprpolkitagent")
+    hl.exec_cmd("waybar")
+    hl.exec_cmd("mako")
+    hl.exec_cmd("awww-daemon")
+    hl.exec_cmd("sleep 3 && easyeffects --gapplication-service")
+    hl.exec_cmd("~/.config/hypr/wallpaper.sh")
+    hl.exec_cmd("wl-paste --type text --watch cliphist store")
+    hl.exec_cmd("wl-paste --type image --watch cliphist store")
+end)
 
-bindel = SUPER, A, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
-bindel = SUPER, D, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
+-- Input
+hl.config({
+    input = {
+        kb_layout = "us,ru",
+        kb_options = "grp:alt_shift_toggle, compose:ralt",
+        follow_mouse = 1,
+    },
+})
 
-bindm = SUPER, mouse:272, movewindow
-bindm = SUPER, mouse:273, resizewindow
+-- Keybindings
+local mod = "SUPER"
 
-input {
-    kb_layout = us,ru
-    kb_options = grp:alt_shift_toggle, compose:ralt
-    follow_mouse = 1
-}
+-- Exit / close / launch
+hl.bind(mod .. " + M", hl.dsp.exit())
+hl.bind(mod .. " + C", hl.dsp.window.close())
+hl.bind(mod .. " + Q", hl.dsp.exec_cmd("kitty"))
+hl.bind(mod .. " + E", hl.dsp.exec_cmd("thunar"))
+hl.bind(mod .. " + R", hl.dsp.exec_cmd("wofi --show drun --normal-window --style ~/.config/wofi/style.css"))
 
-decoration {
-    rounding = 12
-    active_opacity = 1.0
-    inactive_opacity = 1.0
+-- Workspaces 1-6
+for i = 1, 6 do
+    hl.bind(mod .. " + " .. i, hl.dsp.focus({ workspace = i }))
+end
 
-    shadow {
-        enabled = true
-        range = 18
-        render_power = 3
-        color = rgba(00000055)
-    }
+-- Window actions and focus
+hl.bind(mod .. " + F", hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" }))
+hl.bind(mod .. " + X", hl.dsp.window.float({ action = "toggle" }))
+hl.bind(mod .. " + up", hl.dsp.focus({ direction = "up" }))
+hl.bind(mod .. " + left", hl.dsp.focus({ direction = "left" }))
+hl.bind(mod .. " + down", hl.dsp.focus({ direction = "down" }))
+hl.bind(mod .. " + right", hl.dsp.focus({ direction = "right" }))
 
-    blur {
-        enabled = true
-        size = 4
-        passes = 2
-        new_optimizations = true
-        ignore_opacity = true
-        xray = false
-        noise = 0.008
-        contrast = 1.0
-        brightness = 1.0
-    }
-}
+-- Force-kill active window (SIGKILL)
+hl.bind(mod .. " + SHIFT + C", hl.dsp.window.kill())
 
-general {
-    border_size = 2
-    col.active_border = rgb(1793d1) rgb(33ccff) 45deg
-    col.inactive_border = rgba(1793d11a)
-    gaps_in = 5
-    gaps_out = 10
-}
+-- Manual reload (Lua configs also reload automatically when saved)
+hl.bind(mod .. " + SHIFT + R", hl.dsp.exec_cmd("hyprctl reload"))
 
-animations {
-    enabled = true
-    bezier = smooth, 0.25, 1, 0.5, 1
-    animation = windows, 1, 5, smooth
-    animation = windowsOut, 1, 5, smooth
-    animation = border, 1, 8, default
-    animation = fade, 1, 5, default
-    animation = workspaces, 1, 6, smooth
+-- Screenshot and clipboard history
+hl.bind(mod .. " + Z", hl.dsp.exec_cmd("hyprshot -m region --clipboard-only"))
+hl.bind(mod .. " + V", hl.dsp.exec_cmd("cliphist list | wofi --dmenu | cliphist decode | wl-copy"))
 
-}
+-- Volume: locked + repeating reproduces the old bindel behavior
+hl.bind(mod .. " + A", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"), {
+    locked = true,
+    repeating = true,
+})
+hl.bind(mod .. " + D", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"), {
+    locked = true,
+    repeating = true,
+})
 
-layerrule = blur on, match:namespace all
-windowrule = opacity 0.95, match:namespace all
-windowrule = opacity 1, match:class steam_app_.*
+-- Mouse: move with SUPER + left mouse button, resize with right mouse button
+hl.bind(mod .. " + mouse:272", hl.dsp.window.drag(), { mouse = true })
+hl.bind(mod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
+
+-- General appearance
+hl.config({
+    general = {
+        border_size = 2,
+        col = {
+            active_border = {
+                colors = { "rgb(1793d1)", "rgb(33ccff)" },
+                angle = 45,
+            },
+            inactive_border = "rgba(1793d11a)",
+        },
+        gaps_in = 5,
+        gaps_out = 10,
+    },
+
+    decoration = {
+        rounding = 12,
+        active_opacity = 1.0,
+        inactive_opacity = 1.0,
+
+        shadow = {
+            enabled = true,
+            range = 18,
+            render_power = 3,
+            color = 0x55000000,
+        },
+
+        blur = {
+            enabled = true,
+            size = 4,
+            passes = 2,
+            new_optimizations = true,
+            ignore_opacity = true,
+            xray = false,
+            noise = 0.008,
+            contrast = 1.0,
+            brightness = 1.0,
+        },
+    },
+})
+
+-- Animation curve and animations
+hl.curve("smooth", {
+    type = "bezier",
+    points = { { 0.25, 1.0 }, { 0.5, 1.0 } },
+})
+
+hl.animation({ leaf = "windows", enabled = true, speed = 5, bezier = "smooth" })
+hl.animation({ leaf = "windowsOut", enabled = true, speed = 5, bezier = "smooth" })
+hl.animation({ leaf = "border", enabled = true, speed = 8, bezier = "default" })
+hl.animation({ leaf = "fade", enabled = true, speed = 5, bezier = "default" })
+hl.animation({ leaf = "workspaces", enabled = true, speed = 6, bezier = "smooth" })
+
+-- Window rules: 0.95 opacity for all windows; selected apps stay fully opaque.
+hl.window_rule({
+    match = { class = ".*" },
+    opacity = "0.95",
+})
+
+local fully_opaque = "1.0 override 1.0 override 1.0 override"
+
+hl.window_rule({ match = { class = "^steam_app_.*$" }, opacity = fully_opaque })
+hl.window_rule({ match = { class = "^Minecraft.*$" }, opacity = fully_opaque })
+hl.window_rule({ match = { class = "^org-prismlauncher-EntryPoint$" }, opacity = fully_opaque })
+hl.window_rule({ match = { class = "^Terraria.*$" }, opacity = fully_opaque })
+
+-- Layer rules: blur only opaque Waybar regions (islands)
+hl.layer_rule({
+    match = { namespace = "^waybar$" },
+    blur = true,
+    ignore_alpha = 0.2,
+})
 ```
-Параметры `env` для Nvidia нужны такие:
+Параметры `hl.env` для Nvidia нужны такие:
 
-- env = LIBVA_DRIVER_NAME,nvidia
-- env = XDG_SESSION_TYPE,wayland
-- env = GTK_THEME,Colloid-Dark
-- env = GBM_BACKEND,nvidia-drm
-- env = __GLX_VENDOR_LIBRARY_NAME,nvidia
+```lua
+hl.env("LIBVA_DRIVER_NAME", "nvidia")
+hl.env("XDG_SESSION_TYPE", "wayland")
+hl.env("GTK_THEME", "Colloid-Dark")
+hl.env("GBM_BACKEND", "nvidia-drm")
+hl.env("__GLX_VENDOR_LIBRARY_NAME", "nvidia")
+```
 
-Параметры монитора, для `monitor` можно узнать командой:
+Параметры монитора, для `hl.monitor` можно узнать командой:
 
 ```bash
 hyprctl monitors
