@@ -154,7 +154,7 @@ rm -rf yay
 - `docker docker-compose`: контейнер для приложений.
 - `timeshift`: для создания снимков системы.
 - `thunar thunar-archive-plugin thunar-volman`: для файлового менеджера Thunar.
-- `cups cups-filters ghostscript gsfonts`: для принтеров.
+- `cups cups-filters ghostscript gsfonts sane simple-scan qpdf`: для принтеров.
 - `upower`: для вывода информации о батарее ноутбука.
 - `winetricks mesa-utils lib32-nvidia-utils lib32-mesa-utils`: для запуска старых игр.
 
@@ -282,6 +282,22 @@ nano ~/.config/brave-flags.conf
 - `disable-gpu-driver-bug-workarounds`: отключает костыли, которые Chromium применяет для конкретных драйверов видеокарт, если знает, что в них есть баги.
 - также желательно выключить QUIC: brave://flags/#enable-quic
 
+## Vesktop
+
+Редактируем конфигурационный файл:
+
+```bash
+nano ~/.config/vesktop-flags.conf
+```
+
+```ini
+--ozone-platform-hint=auto
+--password-store=basic
+--enable-features=WaylandWindowDecorations
+--disable-gpu-driver-bug-workarounds
+```
+
+- этот конфиг нужен, если при запуске `Vesktop` у вас просто серое окошко
 
 ## Jellyfin
 
@@ -577,5 +593,23 @@ mount /dev/nvme0n1p1 /mnt/boot
 
 sudo timeshift --restore
 ```
+
+## Принтеры
+
+Чтобы отделить определённые страницы в файле `.pdf`:
+
+```bash
+qpdf documents.pdf --pages . 4-8 -- diplom.pdf
+```
+
+- извлекает страницы с 4 по 8 из `documents.pdf` и сохраняет как `diplom.pdf`
+
+Для сжатия файла:
+
+```bash
+gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/ebook -dNOPAUSE -dQUIET -dBATCH -sOutputFile=compressed_part-1.pdf part-1.pdf
+```
+
+- сжимает `part-1.pdf` с оптимальным качеством и сохраняет как `compressed_part-1.pdf`
 
 ---
